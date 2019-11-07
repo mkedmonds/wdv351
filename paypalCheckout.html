@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AY3hedqZUejlCDrgQFw2tOlYNlIAREfUpPLgOMQZY936hPiDZ3tGwClgtobr_lX7qAUx44_LlQ3DFqR6">
+    </script>
+
+    <style>
+
+        div,img{
+            
+            width: 500px;
+        }
+    </style>
+  
+</head>
+<body>
+
+    <h1>WDV351: Web Applications and Components</h1>
+
+    <h2>Paypal Checkout</h2>
+
+
+   <img src="beach2.jpg" alt="beach">
+        
+
+
+    <div id="paypal-button-container"></div>
+
+    <script>
+
+        
+            
+        paypal.Buttons({
+
+            style: {
+                color:  'silver',
+                shape:  'pill',
+                height: 40
+            },
+
+
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                    amount: {
+                        value: '4.99'
+                    }
+                    }]
+                });
+            },
+
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    // Call your server to save the transaction
+                    return fetch('/paypal-transaction-complete', {
+                        method: 'post',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID
+                        })
+                    });
+                });
+            }
+
+            
+            
+
+        }).render('#paypal-button-container');
+
+      </script>
+
+
+
+
+
+</body>
